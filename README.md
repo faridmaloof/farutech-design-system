@@ -2,6 +2,8 @@
 
 Un sistema de diseño independiente para aplicaciones Farutech, con versionado por ambientes y distribución automatizada.
 
+**Repositorio:** https://github.com/faridmaloof/farutech-design-system
+
 ## 🚀 Características
 
 - **Componentes UI reutilizables**: Botones, formularios y más
