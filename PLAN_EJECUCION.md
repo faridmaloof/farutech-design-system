@@ -400,6 +400,177 @@ npm publish --tag latest
 
 ---
 
+## 🧭 PLAN DETALLADO DE EJECUCIÓN (STEP-BY-STEP)
+Este bloque es la guía operativa para que cualquier responsable continúe el trabajo sin ambigüedad. Incluye fases, tareas, responsables, tiempos estimados, comandos de verificación, entregables y pasos de recuperación.
+
+Formato por fase:
+- Objetivo: resumen corto
+- Duración estimada
+- Responsable(s)
+- Tareas (paso a paso)
+- Entregables
+- Comandos de verificación
+- Criterios de aceptación
+- Pasos de rollback / recuperación
+
+### Fase 0 — Preparación y permisos (Pre-work)
+- Objetivo: garantizar infraestructura, permisos y accesos.
+- Duración: 0.5 - 1 día
+- Responsable: Lead DevOps / Arquitecto
+- Tareas:
+   1. Confirmar transferencia del repo a la organización `farutech` o asegurar permisos de equipo.
+   2. Crear secrets en GitHub: `NPM_TOKEN`, `NODE_AUTH_TOKEN`, `SENTRY_DSN` (si aplica), credenciales de CI.
+   3. Verificar cuentas de paquetes (npm / GitHub Packages).
+   4. Crear equipos y accesos en GitHub con permisos mínimos necesarios.
+- Entregables: lista de secrets, owner list, acceso validado.
+- Verificación:
+   ```bash
+   # verificar token npm
+   npm whoami --registry https://npm.pkg.github.com
+   gh repo view org/repo --json visibility
+   ```
+- Aceptación: Todos los secrets presentes y accesibles por workflows.
+- Rollback: Revocar tokens inválidos y regenerar, registrar incidente en GitHub Issues.
+
+### Fase 1 — Scaffolding y tokens (COMPLETADA parcialmente)
+- Objetivo: estructura de paquetes, tokens de diseño y exportes públicos.
+- Duración: 1-2 días
+- Responsable: Arquitecto Frontend / Senior Engineer
+- Tareas:
+   1. Validar `src/` con tokens, styles, componentes base (Button, Input, Card, etc.).
+   2. Crear `index.ts` con exports públicos (components, hooks, utils, styles).
+   3. Añadir `README.md`, `CONTRIBUTING.md`, `CODE_OF_CONDUCT.md`.
+- Entregables: paquete compilable, README y guía de contribución.
+- Verificación:
+   ```bash
+   npm ci
+   npm run build
+   npm test
+   ```
+- Aceptación: Build passing, tests básicos pasando, storybook arrancando.
+- Rollback: Revertir al commit anterior del scaffolding y levantar issue con la razón.
+
+### Fase 2 — Componentes base y cobertura mínima
+- Objetivo: implementar 10 componentes base con tests y stories.
+- Duración: 5 días
+- Responsable: Equipo Frontend (2 devs)
+- Tareas:
+   1. Implementar API del componente (prop-types/TS types + JSDoc).
+   2. Añadir Storybook story con `args` y controles.
+   3. Escribir tests unitarios con Vitest + Testing Library.
+   4. Ejecutar lint y corregir warnings.
+   5. Revisiones de PR y merge.
+- Entregables: 10 componentes con stories y tests, cobertura mínima 70%.
+- Verificación:
+   ```bash
+   npx vitest run --coverage
+   npm run storybook --silent &
+   ```
+- Aceptación: PR aprobado, tests pasan, storybook muestra componentes.
+- Rollback: Revertir PR defectuoso y documentar la razón; pin a versión anterior si afecta consumidores.
+
+### Fase 3 — Hooks y utils (core)
+- Objetivo: consolidar hooks críticos (`useAuth`, `useToast`, `useLocalStorage`) y utilidades.
+- Duración: 3 días
+- Responsable: Senior Engineer + Triage owner
+- Tareas:
+   1. Identificar APIs requeridas por dashboards (mapa de uso).
+   2. Implementar hooks con tests y mocks (MSW si hacen requests).
+   3. Exportar desde `src/hooks/index.ts` y documentar ejemplos.
+- Entregables: 10+ hooks, tests y ejemplos en Storybook/docs.
+- Verificación: Cobertura de hooks > 90% y ejemplos ejecutables.
+- Rollback: Desactivar hook en build (feature flag) y publicar parche.
+
+### Fase 4 — Storybook completo y documentación técnica
+- Objetivo: Storybook con 50+ componentes, docs automáticas (TypeDoc), guías de contribución.
+- Duración: 7-10 días
+- Responsable: Docs Owner + Frontend Lead
+- Tareas:
+   1. Completar stories con `args`, `controls`, `docs` y `design` links.
+   2. Habilitar `addon-a11y`, `addon-viewport` y `addon-docs`.
+   3. Generar TypeDoc para `src/` y publicar en `gh-pages` o docs site.
+   4. Ejecutar auditoría de accesibilidad (jest-axe) en stories críticos.
+- Entregables: sitio Storybook público/privado, TypeDoc site, checklist de accesibilidad.
+- Verificación:
+   ```bash
+   npm run build-storybook
+   npx typedoc --out docs/api src
+   ```
+- Aceptación: Storybook build exitoso y docs accesibles.
+- Rollback: Restaurar última build estable y notificar equipo.
+
+### Fase 5 — Testing automatizado y visual regression
+- Objetivo: cobertura >= 80% y pruebas visuales (Chromatic/MSW + Percy opcional).
+- Duración: 7 días
+- Responsable: QA Engineer + Frontend
+- Tareas:
+   1. Integrar `vitest` en CI con coverage thresholds.
+   2. Configurar Chromatic (o alternativa) para visual regression por PR.
+   3. Crear tests end-to-end básicos en componentes críticos.
+- Entregables: reports de coverage, baseline visuales.
+- Verificación: thresholds cumplidos en CI; PR bloqueado si falla.
+- Rollback: bloquear merge de releases hasta resolver discrepancies.
+
+### Fase 6 — Publicación y pipeline de releases
+- Objetivo: releases automáticos por tags/branches y promoción controlada (dev → qa → staging → prod).
+- Duración: 3 días
+- Responsable: DevOps + Maintainer
+- Tareas:
+   1. Implementar workflows: PR validation, publish-dev, promote-qa, promote-staging, release-prod.
+   2. Establecer naming de versiones y generación de changelog (con `semantic-release` o custom script).
+   3. Probar promoción manual y automática.
+- Entregables: Workflows en `.github/workflows`, scripts de versionado.
+- Verificación:
+   ```bash
+   # trigger test
+   git tag -a 2026.01.31.0 -m "release test" && git push origin --tags
+   ```
+- Aceptación: Package visible en registry y consumidores pueden instalar.
+- Rollback: Revertir tag y publicar parche con fix.
+
+### Fase 7 — Monitoring, Telemetría y SLA
+- Objetivo: instrumentar métricas de uso, errores y releases.
+- Duración: 5 días
+- Responsable: Observability / Platform
+- Tareas:
+   1. Añadir puntos de telemetría (opt-in) en SDK para errores y usage.
+   2. Integrar Sentry / Datadog / Prometheus según stack.
+   3. Definir SLAs y alertas en teams.
+- Entregables: Dashboard de métricas y runbooks.
+- Verificación: Eventos apareciendo en dashboards y alertas de prueba.
+- Rollback: Desactivar telemetría si afecta performance.
+
+### Fase 8 — Mantenimiento y roadmap continuo
+- Objetivo: estabilizar, documentar y planificar releases periódicos.
+- Duración: Proyecto continuo (sprints recurrentes)
+- Responsable: Product + Engineering Manager
+- Tareas:
+   1. Calendarizar releases (sprint-based): weekly/bi-weekly patch, monthly minor.
+   2. Mantener backlog de mejoras, accessibility y performance.
+   3. Auditorías trimestrales de dependencias y seguridad.
+- Entregables: Roadmap, backlog priorizado, reportes trimestrales.
+- Verificación: KPIs de adopción, issues abiertas cerradas en tiempo.
+
+---
+
+## 📦 CHECKLIST DE RECUPERACIÓN (DISASTER RECOVERY)
+1. Si un release rompe consumidores: revertir tag y publicar patch (hotfix).
+2. Si workflow falla por permisos: revisar secrets y permisos de repo/org.
+3. Si dependencias generan vulnerabilidades: usar `npm audit fix` o pin temporal con `resolutions`/overrides y abrir issue de seguimiento.
+4. Comunicación: abrir un Issue con plantilla de postmortem y notificar stakeholders por Slack/Email.
+
+## 📣 COMUNICACIÓN Y RESPONSABILIDADES
+- Responsable Técnico (Architect): decisiones de API y aprobación de breaking changes.
+- Maintainer/Release Owner: ejecutar promociones y releases.
+- DevOps: gestionar secrets, runners y despliegues.
+- QA: firmar aprobaciones de QA y verificación en entornos.
+
+---
+
+Si ocurre cualquier interrupción: indicar "Continuar con el PLAN_DETALLADO" y seguir la fase y checklist correspondiente.
+
+---
+
 **Última actualización:** Enero 31, 2026  
 **Próxima revisión:** Febrero 7, 2026  
 **Estado del plan:** ACTIVO 🚀</content>
