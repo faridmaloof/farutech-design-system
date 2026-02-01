@@ -5,6 +5,7 @@
 import * as React from 'react';
 import { cn } from '../utils/cn';
 import { Button } from './ui/button';
+import { Card } from './ui/card';
 // import { Badge } from '@/components/ui/badge';
 import { Separator } from './ui/separator';
 import {
