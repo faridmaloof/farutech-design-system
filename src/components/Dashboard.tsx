@@ -3,12 +3,10 @@
 // ============================================================================
 
 import * as React from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
-import { cn } from '@/lib/utils';
-import { Button } from '@/components/ui/button';
-import { Card } from '@/components/ui/card';
-import { Badge } from '@/components/ui/badge';
-import { Separator } from '@/components/ui/separator';
+import { cn } from '../utils/cn';
+import { Button } from './ui/button';
+// import { Badge } from '@/components/ui/badge';
+import { Separator } from './ui/separator';
 import {
   LayoutDashboard,
   Users,
@@ -179,22 +177,16 @@ export function ModuleSelector({
           )}
           <span>{currentModule?.name || placeholder}</span>
           {currentModule?.badge && (
-            <Badge variant="secondary" className="text-xs">
+            <span className="inline-flex items-center rounded-full border border-primary/20 bg-primary/10 text-primary px-2 py-0.5 text-xs font-semibold">
               {currentModule.badge}
-            </Badge>
+            </span>
           )}
         </div>
         <ChevronRight className={cn("h-4 w-4 transition-transform", isOpen && "rotate-90")} />
       </Button>
 
-      <AnimatePresence>
-        {isOpen && (
-          <motion.div
-            initial={{ opacity: 0, y: -10 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -10 }}
-            className="absolute top-full mt-1 w-full bg-background border rounded-md shadow-lg z-50"
-          >
+      {isOpen && (
+        <div className="absolute top-full mt-1 w-full bg-background border rounded-md shadow-lg z-50">
             <div className="p-2">
               <input
                 type="text"
@@ -224,16 +216,15 @@ export function ModuleSelector({
                     )}
                   </div>
                   {module.badge && (
-                    <Badge variant="outline" className="text-xs">
+                    <span className="inline-flex items-center rounded-full border text-foreground px-2 py-0.5 text-xs font-semibold">
                       {module.badge}
-                    </Badge>
+                    </span>
                   )}
                 </button>
               ))}
             </div>
-          </motion.div>
+          </div>
         )}
-      </AnimatePresence>
     </div>
   );
 }
@@ -355,9 +346,9 @@ export function DashboardSidebar({
                     <>
                       <span className="flex-1 truncate">{item.label}</span>
                       {item.badge && (
-                        <Badge variant="secondary" className="text-xs">
+                        <span className="inline-flex items-center rounded-full border border-transparent bg-secondary text-secondary-foreground px-2 py-0.5 text-xs font-semibold">
                           {item.badge}
-                        </Badge>
+                        </span>
                       )}
                     </>
                   )}
@@ -412,17 +403,12 @@ export function DashboardContent({
         </div>
       )}
       <div className="flex-1 p-6 overflow-auto">
-        <AnimatePresence mode="wait">
-          <motion.div
-            key={breadcrumbItems[breadcrumbItems.length - 1]?.label}
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -20 }}
-            transition={{ duration: 0.2 }}
-          >
-            {children}
-          </motion.div>
-        </AnimatePresence>
+        <div
+          key={breadcrumbItems[breadcrumbItems.length - 1]?.label}
+          className="transition-opacity duration-200"
+        >
+          {children}
+        </div>
       </div>
     </main>
   );
@@ -467,12 +453,12 @@ export function Dashboard({ config, children, className }: DashboardProps) {
           >
             {children || (
               <div className="space-y-6">
-                <Card className="p-6">
+                <div className="bg-card text-card-foreground rounded-lg border p-6 shadow-sm">
                   <h2 className="text-2xl font-bold mb-4">Bienvenido al Dashboard</h2>
                   <p className="text-muted-foreground">
                     Selecciona un módulo para comenzar a trabajar.
                   </p>
-                </Card>
+                </div>
 
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                   {config.modules.slice(0, 6).map((module) => (
