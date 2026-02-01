@@ -137,14 +137,14 @@ export function DataTable<TData, TValue>({
         header: ({ table }) => (
           <Checkbox
             checked={table.getIsAllPageRowsSelected()}
-            onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
+            onCheckedChange={(checked) => table.toggleAllPageRowsSelected(!!checked)}
             aria-label="Select all"
           />
         ),
         cell: ({ row }) => (
           <Checkbox
             checked={row.getIsSelected()}
-            onCheckedChange={(value) => row.toggleSelected(!!value)}
+            onCheckedChange={(checked) => row.toggleSelected(!!checked)}
             aria-label="Select row"
           />
         ),

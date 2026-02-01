@@ -1,6 +1,22 @@
 export * from './components/ui';
 export * from './styles';
 
+// Dashboard System - Mini-Programa Architecture
+export {
+  Dashboard,
+  DashboardProvider,
+  DashboardHeader,
+  DashboardSidebar,
+  DashboardContent,
+  ModuleSelector,
+  useDashboard,
+  type DashboardConfig,
+  type ModuleConfig,
+  type NavigationSection,
+  type NavigationItem,
+  type IndustryType
+} from './components/Dashboard';
+
 // Farutech-specific Components
 export { FarutechLogo } from './components/FarutechLogo';
 export { ModuleCard } from './components/ModuleCard';
