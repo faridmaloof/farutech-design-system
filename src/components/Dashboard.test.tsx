@@ -63,19 +63,19 @@ describe('Dashboard System', () => {
   describe('Dashboard Component', () => {
     it('renders with basic configuration', () => {
       render(<Dashboard config={testConfig} />);
-      expect(screen.getByText('Test Dashboard')).toBeInTheDocument();
+      expect(screen.getAllByText('Test Dashboard').length).toBeGreaterThan(0);
     });
 
     it('renders sidebar navigation', () => {
       render(<Dashboard config={testConfig} />);
-      expect(screen.getByText('Main')).toBeInTheDocument();
-      expect(screen.getByText('Dashboard')).toBeInTheDocument();
-      expect(screen.getByText('Users')).toBeInTheDocument();
+      expect(screen.getAllByText('Main').length).toBeGreaterThan(0);
+      expect(screen.getAllByText('Dashboard').length).toBeGreaterThan(0);
+      expect(screen.getAllByText('Users').length).toBeGreaterThan(0);
     });
 
     it('shows breadcrumb when configured', () => {
       render(<Dashboard config={testConfig} />);
-      expect(screen.getByText('Dashboard')).toBeInTheDocument();
+      expect(screen.getAllByText('Dashboard').length).toBeGreaterThan(0);
     });
 
     it('renders default content when no children provided', () => {

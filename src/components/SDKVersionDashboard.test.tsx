@@ -31,7 +31,7 @@ describe('SDKVersionDashboard', () => {
     render(<SDKVersionDashboard />);
 
     // The Package icon should be present
-    const iconContainer = screen.getByRole('generic');
+    const iconContainer = screen.getByTestId('package-icon');
     expect(iconContainer).toBeInTheDocument();
   });
 

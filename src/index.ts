@@ -1,6 +1,10 @@
 export * from './components/ui';
 export * from './styles';
 
+// Foundations: tokens & layout utilities
+export * from './foundations/tokens';
+export { Grid } from './foundations/grid/Grid';
+
 // Dashboard System - Mini-Programa Architecture
 export {
   Dashboard,
@@ -23,6 +27,15 @@ export { ModuleCard } from './components/ModuleCard';
 export { LoadingSpinner } from './components/LoadingSpinner';
 export { ErrorBoundary } from './components/ErrorBoundary';
 
+// Hooks (migrated from packages)
+export { AuthProvider, useAuth } from './hooks/useAuth';
+export { usePermissions } from './hooks/usePermissions';
+export { useModules } from './hooks/useModules';
+export { useTheme } from './hooks/useTheme';
+
+// Utils
+export { generateTones } from './utils/generateTones';
+
 // Hooks
 export { useIsMobile } from './hooks/use-mobile';
 export { useToast } from './hooks/use-toast';
@@ -40,5 +53,5 @@ export { farutechPreset } from './presets/tailwind-preset';
 // Legacy exports (for backward compatibility)
 export { SDKVersionDashboard } from './components/SDKVersionDashboard';
 export { AnalyticsDashboard } from './components/AnalyticsDashboard';
-export { useAuth } from './hooks/useAuth';
+// `useAuth` exported above with `AuthProvider`.
 export { UrlBuilder, createUrl } from './utils/urlBuilder';
